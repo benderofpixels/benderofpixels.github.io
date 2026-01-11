@@ -195,6 +195,16 @@
             color: var(--text-main);
         }
 
+        #statsToggleBtn.active {
+            background: rgba(99, 102, 241, 0.15);
+            color: var(--indigo);
+        }
+
+        body.dark #statsToggleBtn.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
         /* Container */
         .container {
             max-width: 900px;
@@ -202,12 +212,16 @@
             padding: 1.25rem;
         }
 
-        /* Stats Grid - RESTORED ORIGINAL */
+        /* Stats Grid - hidden by default, shown with .show-stats */
         .stats-grid {
-            display: grid;
+            display: none;
             grid-template-columns: repeat(3, 1fr);
-            gap: 0.75rem;
-            margin-bottom: 1.5rem;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .stats-grid.show-stats {
+            display: grid;
         }
 
         .stat-card {
@@ -305,7 +319,7 @@
 
         .search-input {
             width: 100%;
-            padding: 0.75rem 5.5rem 0.75rem 2.5rem;
+            padding: 0.75rem 4.5rem 0.75rem 2.5rem;
             background: var(--input-bg);
             border: 1px solid var(--input-border);
             border-radius: 10px;
@@ -330,10 +344,7 @@
         }
 
         .date-filter-btn {
-            position: absolute;
-            right: 0.5rem;
-            top: 50%;
-            transform: translateY(-50%);
+            position: static;
             width: 32px;
             height: 32px;
             border-radius: 8px;
@@ -381,6 +392,24 @@
         .date-filter-btn.active {
             background: var(--indigo);
             color: white;
+        }
+
+        /* Filter area container with divider */
+        .filter-area {
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            padding: 0 0.25rem;
+            background: var(--grey-100);
+            border-radius: 0 10px 10px 0;
+            border-left: 1px solid var(--border-color);
+        }
+
+        body.dark .filter-area {
+            background: var(--bg-surface-hover);
         }
 
         .date-filter-panel {
@@ -595,44 +624,24 @@
             gap: 0.375rem;
         }
 
-        /* Compact card mode (single-line) */
-        .card.compact {
-            padding: 0.625rem 0.75rem;
+        /* Reading Mode */
+        body.reading-mode .card.reading {
+            min-height: calc(100vh - 140px);
+            border-radius: 12px;
         }
 
-        .card.compact .card-top {
+        body.reading-mode .card.reading .card-text {
+            white-space: pre-wrap;
+            -webkit-line-clamp: unset;
+            max-height: none;
+        }
+
+        .card .close-reading-btn {
             display: none;
         }
 
-        .card.compact .card-body {
-            align-items: center;
-        }
-
-        .card.compact .card-content {
+        body.reading-mode .card.reading .close-reading-btn {
             display: flex;
-            flex: 1;
-            align-items: center;
-            gap: 0.5rem;
-            min-width: 0;
-        }
-
-        .card.compact .card-text {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .card.compact .compact-date {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            white-space: nowrap;
-            flex-shrink: 0;
-        }
-
-        .card.compact .compact-actions {
-            display: flex;
-            gap: 0.25rem;
-            flex-shrink: 0;
-            margin-left: 0.5rem;
         }
 
         /* Tags */
@@ -725,12 +734,12 @@
             flex: 1;
             font-size: 0.875rem;
             color: var(--text-main);
-            white-space: nowrap;
-            /* Collapsed state */
+            white-space: normal;
             overflow: hidden;
-            /* Collapsed state */
-            text-overflow: ellipsis;
-            /* Collapsed state */
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
             line-height: 1.4;
             max-width: 100%;
             cursor: pointer;
@@ -838,6 +847,12 @@
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
         }
 
+        .fab.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.8) translateY(20px);
+        }
+
         /* Modal */
         .modal {
             position: fixed;
@@ -883,6 +898,43 @@
             padding: 1.25rem;
         }
 
+        /* Reading Modal */
+        .reading-box {
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .reading-badges {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+
+        .reading-actions {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .reading-content {
+            padding: 1.25rem;
+            overflow-y: auto;
+            max-height: calc(90vh - 80px);
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+
+        .reading-content ul,
+        .reading-content ol {
+            padding-left: 1.5rem;
+            margin: 0.5rem 0;
+        }
+
+        .reading-content input[type="checkbox"] {
+            margin-left: 0;
+        }
+
         .type-switch {
             display: flex;
             gap: 0.5rem;
@@ -913,8 +965,40 @@
             color: var(--indigo);
         }
 
+        /* Modal Title with Type Dropdown */
+        .modal-title-group {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .modal-title-group>span {
+            font-weight: 600;
+            font-size: 1.125rem;
+        }
+
+        .type-select {
+            font-size: 1.125rem;
+            font-weight: 400;
+            border: none;
+            background: transparent;
+            color: var(--text-main);
+            cursor: pointer;
+            padding: 0.25rem 0.5rem 0.15rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        .type-select:hover {
+            background: var(--grey-100);
+        }
+
+        .type-select:focus {
+            outline: none;
+            background: var(--grey-100);
+        }
+
         .form-field {
-            margin-bottom: 1rem;
+            margin-bottom: 0;
         }
 
         .form-label {
@@ -948,8 +1032,39 @@
         }
 
         .form-textarea {
-            min-height: 90px;
+            min-height: 180px;
             resize: vertical;
+        }
+
+        .editor-div {
+            width: 100%;
+            min-height: 180px;
+            padding: 0.75rem;
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-family: inherit;
+            outline: none;
+            overflow-y: auto;
+            color: var(--text-main);
+            white-space: pre-wrap;
+        }
+
+        .editor-div:focus {
+            border-color: var(--indigo);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .editor-div[placeholder]:empty:before {
+            content: attr(placeholder);
+            color: var(--text-secondary);
+        }
+
+        .editor-div ul,
+        .editor-div ol {
+            padding-left: 1.5rem;
+            margin: 0.5rem 0;
         }
 
         .input-with-btn {
@@ -973,6 +1088,13 @@
             border-top: 1px solid var(--border-color);
             display: flex;
             gap: 0.5rem;
+        }
+
+        /* Task fields 2-column layout */
+        .task-fields-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
         }
 
         .btn-block {
@@ -1059,6 +1181,61 @@
             }
         }
 
+        /* Category List in Settings */
+        .category-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .category-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.5rem 0.75rem;
+            background: var(--grey-100);
+            border-radius: 6px;
+            font-size: 0.875rem;
+        }
+
+        body.dark .category-item {
+            background: var(--bg-surface-hover);
+        }
+
+        .category-item-name {
+            flex: 1;
+            color: var(--text-main);
+        }
+
+        .category-item-actions {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .category-item-btn {
+            width: 24px;
+            height: 24px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: grid;
+            place-items: center;
+            border-radius: 4px;
+        }
+
+        .category-item-btn:hover {
+            background: var(--grey-200);
+            color: var(--text-main);
+        }
+
+        .category-item-btn.delete:hover {
+            background: rgba(244, 63, 94, 0.1);
+            color: var(--rose);
+        }
+
         /* Pagination - RESTORED ORIGINAL */
         .pagination {
             display: flex;
@@ -1102,6 +1279,115 @@
             opacity: 0.5;
             cursor: not-allowed;
             background: var(--grey-100);
+        }
+
+        /* Category Pills */
+        .category-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.375rem;
+        }
+
+        .cat-pill {
+            padding: 0.375rem 0.625rem;
+            border-radius: 999px;
+            border: 1.5px solid var(--grey-400);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+            max-width: calc(25% - 0.375rem);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        body.dark .cat-pill {
+            border-color: var(--grey-300);
+        }
+
+        .cat-pill:hover {
+            border-color: var(--indigo);
+            color: var(--indigo);
+        }
+
+        .cat-pill.selected {
+            background: var(--indigo);
+            color: white;
+            border-color: var(--indigo);
+        }
+
+        .cat-pill.add-cat {
+            border-style: dashed;
+            color: var(--text-secondary);
+        }
+
+        .cat-pill.add-cat:hover {
+            border-color: var(--emerald);
+            color: var(--emerald);
+        }
+
+        /* Format Toolbar */
+        .format-toolbar {
+            display: flex;
+            gap: 0.25rem;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .format-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            border: none;
+            background: #6b7280;
+            color: white;
+            font-size: 0.875rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
+        }
+
+        body.dark .format-btn {
+            background: var(--grey-200);
+            color: var(--grey-800);
+        }
+
+        .format-btn:hover {
+            background: var(--indigo);
+            color: white;
+        }
+
+        body.dark .format-btn:hover {
+            background: var(--indigo);
+            color: white;
+        }
+
+        /* Inline Checkboxes (smaller than task checkbox) */
+        .inline-checkbox {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 14px;
+            height: 14px;
+            border: 1px solid var(--grey-400);
+            border-radius: 2px;
+            margin-right: 6px;
+            cursor: pointer;
+            vertical-align: middle;
+        }
+
+        .inline-checkbox.checked {
+            background: var(--grey-400);
+        }
+
+        .inline-checkbox.checked+span {
+            text-decoration: line-through;
+            color: var(--text-secondary);
         }
 
         /* Toast */
@@ -1323,11 +1609,19 @@
                         d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z" />
                 </svg>
             </button>
+            <button class="btn btn-ghost" id="statsToggleBtn" onclick="app.toggleStatsFromHeader()"
+                aria-label="Toggle Stats">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round" style="transform: scale(0.9)">
+                    <path
+                        d="M21 12c.552 0 1.005-.449.95-.998a10 10 0 0 0-8.953-8.951c-.55-.055-.998.398-.998.95v8a1 1 0 0 0 1 1z" />
+                    <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
+                </svg>
+            </button>
             <button class="btn btn-ghost" onclick="app.toggleSettings()" aria-label="Settings">
                 <svg class="icon" viewBox="0 0 24 24" fill="currentColor" stroke="none">
-                    <path
-                        d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
-                    <circle cx="12" cy="12" r="3" />
+                    <path fill-rule="evenodd" clip-rule="evenodd"
+                        d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
                 </svg>
             </button>
         </div>
@@ -1425,15 +1719,23 @@
                     oninput="app.handleSearchInput(this)">
                 <button class="search-clear-btn" id="searchClearBtn" onclick="app.clearSearch()"
                     aria-label="Clear search">×</button>
-                <button class="date-filter-btn" id="dateFilterBtn" onclick="app.toggleDateFilter()"
-                    aria-label="Date filter">
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                        <line x1="16" y1="2" x2="16" y2="6" />
-                        <line x1="8" y1="2" x2="8" y2="6" />
-                        <line x1="3" y1="10" x2="21" y2="10" />
-                    </svg>
-                </button>
+                <div class="filter-area">
+                    <button class="date-filter-btn" id="categoryFilterBtn" onclick="app.toggleCategoryFilter()"
+                        aria-label="Category filter">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+                        </svg>
+                    </button>
+                    <button class="date-filter-btn" id="dateFilterBtn" onclick="app.toggleDateFilter()"
+                        aria-label="Date filter">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                            <line x1="16" y1="2" x2="16" y2="6" />
+                            <line x1="8" y1="2" x2="8" y2="6" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
+                        </svg>
+                    </button>
+                </div>
                 <div class="date-filter-panel" id="dateFilterPanel">
                     <div class="date-presets">
                         <button class="date-preset" onclick="app.setDateFilter('all')">All Dates</button>
@@ -1446,12 +1748,6 @@
                         <input type="date" id="dateTo" onchange="app.setDateFilter('custom')">
                     </div>
                 </div>
-                <button class="date-filter-btn" id="categoryFilterBtn" onclick="app.toggleCategoryFilter()"
-                    aria-label="Category filter" style="right:2.5rem">
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
-                    </svg>
-                </button>
                 <div class="date-filter-panel" id="categoryFilterPanel" style="width:200px">
                     <div class="date-presets" id="categoryPresets">
                         <!-- Populated dynamically -->
@@ -1488,7 +1784,13 @@
     <div class="modal" id="editModal" onclick="app.closeModal()">
         <div class="modal-box" onclick="event.stopPropagation()">
             <div class="modal-header">
-                <div class="modal-title" id="modalTitle">New Item</div>
+                <div class="modal-title-group" id="modalTitleGroup">
+                    <span id="modalTitlePrefix">New</span>
+                    <select id="typeSelect" class="type-select" onchange="app.setType(this.value)">
+                        <option value="note">Note</option>
+                        <option value="task">Task</option>
+                    </select>
+                </div>
                 <button class="icon-btn" onclick="app.closeModal()"><svg class="icon" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor">
                         <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -1497,56 +1799,64 @@
             </div>
             <div class="modal-body">
                 <input type="hidden" id="itemId">
-                <div class="type-switch" id="typeSwitch">
-                    <div class="type-option active" id="typeNote" onclick="app.setType('note')">Note</div>
-                    <div class="type-option" id="typeTask" onclick="app.setType('task')">Task</div>
-                </div>
                 <div class="form-field">
-                    <label class="form-label">Category</label>
-                    <div style="display:flex; gap:0.5rem">
-                        <select id="categorySelect" class="form-select"></select>
-                        <button
-                            style="background:var(--grey-100); border:1px solid var(--grey-300); width:42px; border-radius:8px; cursor:pointer; font-size:1.2rem; color:var(--text-main)"
-                            onclick="app.addCategory()">+</button>
-                    </div>
+                    <div class="category-pills" id="categoryPills"></div>
                 </div>
                 <div class="form-field" style="margin-top:1rem">
-                    <label class="form-label">Content</label>
-                    <textarea id="contentInput" class="form-textarea" placeholder="What's on your mind?"></textarea>
-                </div>
-                <div class="form-field hide" id="dueDateGroup" style="margin-top:1rem">
-                    <label class="form-label">Due Date & Time</label>
-                    <input type="datetime-local" id="dueDateInput" class="form-input">
-                </div>
-                <div class="form-field hide" id="reminderGroup" style="margin-top:1rem">
-                    <label class="form-label">Reminder</label>
-                    <select id="reminderInput" class="form-select">
-                        <option value="">None</option>
-                        <option value="0">At time of task</option>
-                        <option value="15">15 minutes before</option>
-                        <option value="60">1 hour before</option>
-                        <option value="1440">1 day before</option>
-                    </select>
-                </div>
-                <div class="form-field hide" id="priorityGroup" style="margin-top:1rem">
-                    <label class="form-label">Priority</label>
-                    <div class="priority-toggle">
-                        <button type="button" class="priority-btn" id="priorityLow"
-                            onclick="app.setPriority('low')">Low</button>
-                        <button type="button" class="priority-btn" id="priorityMedium"
-                            onclick="app.setPriority('medium')">Medium</button>
-                        <button type="button" class="priority-btn" id="priorityHigh"
-                            onclick="app.setPriority('high')">High</button>
+                    <div class="format-toolbar">
+                        <button type="button" class="format-btn" onclick="app.insertCheckbox()"
+                            title="Checkbox">☐</button>
+                        <button type="button" class="format-btn" onclick="app.insertBullet()" title="Bullet">•</button>
+                        <button type="button" class="format-btn" onclick="app.insertNumbered()"
+                            title="Numbered">1.</button>
+                        <button type="button" class="format-btn" onclick="app.wrapBold()"
+                            title="Bold"><strong>B</strong></button>
+                        <button type="button" class="format-btn" onclick="app.wrapItalic()"
+                            title="Italic"><em>I</em></button>
+                        <button type="button" class="format-btn" onclick="app.wrapStrikethrough()"
+                            title="Strikethrough"><s>S</s></button>
+                    </div>
+                    <div id="contentInput" class="editor-div" contenteditable="true" placeholder="What's on your mind?">
                     </div>
                 </div>
-                <div class="form-field hide" id="recurringGroup" style="margin-top:1rem">
-                    <label class="form-label">Repeat</label>
-                    <select id="recurringInput" class="form-select">
-                        <option value="">None</option>
-                        <option value="daily">Daily</option>
-                        <option value="weekly">Weekly</option>
-                        <option value="monthly">Monthly</option>
-                    </select>
+                <div class="form-field hide" id="taskFieldsRow1" style="margin-top:1rem">
+                    <div class="form-field">
+                        <label class="form-label">Due Date & Time</label>
+                        <input type="datetime-local" id="dueDateInput" class="form-input">
+                    </div>
+                    <div class="form-field">
+                        <label class="form-label">Reminder</label>
+                        <select id="reminderInput" class="form-select">
+                            <option value="">None</option>
+                            <option value="0">At time of task</option>
+                            <option value="15">15 min before</option>
+                            <option value="60">1 hour before</option>
+                            <option value="1440">1 day before</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- Task fields - Row 2: Priority & Repeat -->
+                <div class="task-fields-row hide" id="taskFieldsRow2" style="margin-top:0.75rem">
+                    <div class="form-field">
+                        <label class="form-label">Priority</label>
+                        <div class="priority-toggle">
+                            <button type="button" class="priority-btn" id="priorityLow"
+                                onclick="app.setPriority('low')">Low</button>
+                            <button type="button" class="priority-btn" id="priorityMedium"
+                                onclick="app.setPriority('medium')">Medium</button>
+                            <button type="button" class="priority-btn" id="priorityHigh"
+                                onclick="app.setPriority('high')">High</button>
+                        </div>
+                    </div>
+                    <div class="form-field">
+                        <label class="form-label">Repeat</label>
+                        <select id="recurringInput" class="form-select">
+                            <option value="">None</option>
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly">Monthly</option>
+                        </select>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -1555,6 +1865,27 @@
                     style="color:var(--indigo)">Convert to Task</button>
                 <button class="btn btn-primary btn-block" onclick="app.saveItem()">Save</button>
             </div>
+        </div>
+    </div>
+    <!-- Reading Mode Modal -->
+    <div class="modal" id="readingModal" onclick="app.closeReadingModal()">
+        <div class="modal-box reading-box" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div class="reading-badges" id="readingBadges"></div>
+                <div class="reading-actions">
+                    <button class="icon-btn" id="readingEditBtn"><svg class="icon" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                        </svg></button>
+                    <button class="icon-btn" onclick="app.closeReadingModal()"><svg class="icon" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor">
+                            <line x1="18" y1="6" x2="6" y2="18" />
+                            <line x1="6" y1="6" x2="18" y2="18" />
+                        </svg></button>
+                </div>
+            </div>
+            <div class="reading-content" id="readingContent"></div>
         </div>
     </div>
     <div class="modal" id="settingsModal" onclick="app.toggleSettings()">
@@ -1570,21 +1901,19 @@
             <div class="modal-body">
                 <div style="margin-bottom:1.5rem">
                     <label class="form-label">Display Settings</label>
-                    <div class="display-mode-toggle">
-                        <button class="mode-btn" id="modeCompact"
-                            onclick="app.setDisplayMode('compact')">Compact</button>
-                        <button class="mode-btn" id="modeExpanded"
-                            onclick="app.setDisplayMode('expanded')">Expanded</button>
-                    </div>
-                    <label class="toggle-option" style="margin-top:0.75rem">
+                    <label class="toggle-option" style="margin-top:0.5rem">
                         <input type="checkbox" id="showStatsToggle" onchange="app.toggleStats(this.checked)">
-                        <span>Show productivity stats</span>
+                        <span>Show productivity stat cards</span>
                     </label>
                     <label class="toggle-option" style="margin-top:0.5rem">
                         <input type="checkbox" id="sortByPriorityToggle"
                             onchange="app.togglePrioritySort(this.checked)">
                         <span>Show tasks by priority</span>
                     </label>
+                </div>
+                <div style="margin-bottom:1.5rem">
+                    <label class="form-label">Manage Categories</label>
+                    <div id="categoryList" class="category-list"></div>
                 </div>
                 <div>
                     <label class="form-label">Data Management</label>
@@ -1616,7 +1945,6 @@
                 this.toastTimer = null;
                 this.cachedStats = { score: 0, totalTasks: 0, totalNotes: 0, completedTasks: 0, pendingTasks: 0 };
                 this.expandedCards = new Set();
-                this.displayMode = this.data.displayMode || 'expanded';
                 this.showStats = this.data.showStats !== false;
                 this.sortByPriority = this.data.sortByPriority === true;
                 this.currentPage = 1;
@@ -1629,7 +1957,6 @@
 
             init() {
                 this.applyTheme();
-                document.getElementById('statsGrid').style.display = this.showStats ? 'grid' : 'none';
                 this.restoreFilterState();
                 this.updateCachedStats();
                 this.render();
@@ -1640,6 +1967,15 @@
                 this.reminderInterval = setInterval(() => this.checkReminders(), 60000);
                 // Register inline service worker for PWA offline support
                 this.registerServiceWorker();
+                // FAB hide on scroll
+                let fabTimer;
+                const fab = document.querySelector('.fab');
+                window.addEventListener('scroll', () => {
+                    fab.classList.add('hidden');
+                    clearTimeout(fabTimer);
+                    fabTimer = setTimeout(() => fab.classList.remove('hidden'), 500);
+                }, { passive: true });
+
                 document.addEventListener('keydown', (e) => {
                     if (e.key === 'Escape') {
                         this.closeModal();
@@ -1662,6 +1998,14 @@
                         if (!this.categoryFilter) catBtn.classList.remove('active');
                     }
                 });
+
+                // Restore stats setting
+                const showStats = localStorage.getItem('es-notes-show-stats') === '1';
+                document.getElementById('showStatsToggle').checked = showStats;
+                if (showStats) {
+                    document.getElementById('statsGrid').classList.add('show-stats');
+                    document.getElementById('statsToggleBtn').classList.add('active');
+                }
             }
 
             registerServiceWorker() {
@@ -1738,10 +2082,20 @@
                     const stored = localStorage.getItem('es-notes-v3');
                     if (stored) {
                         const data = JSON.parse(stored);
-                        // Migrate date-only values to datetime format
+                        // Migrate date-only values to datetime format & Markdown to HTML
                         data.items = data.items.map(item => {
                             if (item.dueDate && !item.dueDate.includes('T')) {
                                 item.dueDate = item.dueDate + 'T09:00';
+                            }
+                            // Migrate markdown to HTML if not already HTML (heuristic: check for tags)
+                            // Or better: ensure we only parse markers once. 
+                            // For simplicity, we'll assume if it's legacy it doesn't have <div> or <p> or <br> usually,
+                            // but markdown users might have typed anything.
+                            // Let's use a flag or just run it. The parseMarkdown is safe for re-running on simple text but not complex HTML.
+                            // To be safe, let's mark migrated items.
+                            if (!item.migratedToHtml) {
+                                item.content = this.parseMarkdown(item.content);
+                                item.migratedToHtml = true;
                             }
                             return item;
                         });
@@ -1853,12 +2207,10 @@
 
             setType(type) {
                 this.editType = type;
-                document.getElementById('typeNote').className = type === 'note' ? 'type-option active' : 'type-option';
-                document.getElementById('typeTask').className = type === 'task' ? 'type-option active' : 'type-option';
-                document.getElementById('dueDateGroup').className = type === 'task' ? 'form-field' : 'form-field hide';
-                document.getElementById('priorityGroup').className = type === 'task' ? 'form-field' : 'form-field hide';
-                document.getElementById('recurringGroup').className = type === 'task' ? 'form-field' : 'form-field hide';
-                document.getElementById('reminderGroup').className = type === 'task' ? 'form-field' : 'form-field hide';
+                document.getElementById('typeSelect').value = type;
+                const showTask = type === 'task';
+                document.getElementById('taskFieldsRow1').className = showTask ? 'task-fields-row' : 'task-fields-row hide';
+                document.getElementById('taskFieldsRow2').className = showTask ? 'task-fields-row' : 'task-fields-row hide';
             }
 
             setPriority(priority) {
@@ -1888,37 +2240,179 @@
 
             openModal() {
                 this.clearForm(); this.setType('note');
-                document.getElementById('typeSwitch').classList.remove('hide');
+                document.getElementById('typeSelect').classList.remove('hide'); // Show dropdown
+                document.getElementById('typeSelect').disabled = false;
                 document.getElementById('convertToTaskBtn').classList.add('hide');
-                document.getElementById('modalTitle').textContent = 'New Item';
+                document.getElementById('modalTitlePrefix').textContent = 'New';
                 document.getElementById('editModal').classList.add('open');
             }
             closeModal() { document.getElementById('editModal').classList.remove('open'); }
 
             clearForm() {
                 document.getElementById('itemId').value = '';
-                document.getElementById('contentInput').value = '';
+                document.getElementById('contentInput').innerHTML = '';
                 document.getElementById('dueDateInput').value = '';
                 document.getElementById('recurringInput').value = '';
                 document.getElementById('reminderInput').value = '';
                 this.editPriority = 'medium';
                 this.setPriority('medium');
+                this.selectedCategory = this.data.categories[0];
                 this.populateCategories();
             }
 
             parseMarkdown(text) {
-                // Lightweight markdown: **bold**, *italic*, - lists
-                let html = text
+                // Process line by line for list items
+                let lines = text.split('\n').map(line => {
+                    // Checked checkbox with strikethrough
+                    if (line.startsWith('☑ ')) {
+                        return `<div><span class="inline-checkbox checked">✓</span><span style="text-decoration:line-through;color:var(--text-secondary)">${line.slice(2)}</span></div>`;
+                    }
+                    // Unchecked checkbox
+                    if (line.startsWith('☐ ')) {
+                        return `<div><span class="inline-checkbox">·</span><span>${line.slice(2)}</span></div>`;
+                    }
+                    // Bullet list
+                    if (line.startsWith('• ')) {
+                        return `<li style="margin-left:1.25rem">${line.slice(2)}</li>`;
+                    }
+                    // Numbered list
+                    if (/^\d+\. /.test(line)) {
+                        return `<li style="margin-left:1.25rem;list-style-type:decimal">${line.replace(/^\d+\. /, '')}</li>`;
+                    }
+                    return line;
+                }).join('\n');
+
+                // Inline formatting
+                let html = lines
+                    .replace(/~~(.+?)~~/g, '<s>$1</s>')
                     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-                    .replace(/\*(.+?)\*/g, '<em>$1</em>')
-                    .replace(/^- (.+)$/gm, '<li>$1</li>');
-                if (html.includes('<li>')) html = '<ul>' + html + '</ul>';
+                    .replace(/\*(.+?)\*/g, '<em>$1</em>');
                 return html;
             }
 
+            // Formatting toolbar methods
+            insertCheckbox() {
+                this.insertAtLineStart('☐ ');
+            }
+
+
+
+            // Formatting toolbar methods
+            wrapBold() { document.execCommand('bold', false, null); document.getElementById('contentInput').focus(); }
+            wrapItalic() { document.execCommand('italic', false, null); document.getElementById('contentInput').focus(); }
+            wrapStrikethrough() { document.execCommand('strikeThrough', false, null); document.getElementById('contentInput').focus(); }
+            insertBullet() { document.execCommand('insertUnorderedList', false, null); document.getElementById('contentInput').focus(); }
+            insertNumbered() { document.execCommand('insertOrderedList', false, null); document.getElementById('contentInput').focus(); }
+
+            insertCheckbox() {
+                const id = 'cb-' + Date.now();
+                const html = `<input type="checkbox" id="${id}" class="inline-checkbox" style="margin-right:0.5rem; vertical-align: middle;" onclick="app.toggleInlineCheckbox(this)">`;
+                document.execCommand('insertHTML', false, html);
+                document.getElementById('contentInput').focus();
+            }
+
+            toggleInlineCheckbox(el) {
+                if (el.checked) {
+                    el.setAttribute('checked', 'checked');
+                    // Try to strike through next sibling text node or element
+                    if (el.nextSibling) {
+                        const span = document.createElement('span');
+                        span.style.textDecoration = 'line-through';
+                        span.style.color = 'var(--text-secondary)';
+
+                        // If next sibling is text node, wrap it
+                        if (el.nextSibling.nodeType === 3) {
+                            span.textContent = el.nextSibling.textContent;
+                            el.parentNode.replaceChild(span, el.nextSibling);
+                        } else {
+                            // If element, apply style
+                            el.nextSibling.style.textDecoration = 'line-through';
+                            el.nextSibling.style.color = 'var(--text-secondary)';
+                        }
+                    }
+                } else {
+                    el.removeAttribute('checked');
+                    if (el.nextSibling && el.nextSibling.style && el.nextSibling.style.textDecoration === 'line-through') {
+                        // Undo styling
+                        if (el.nextSibling.tagName === 'SPAN' && el.nextSibling.childNodes.length === 1 && el.nextSibling.firstChild.nodeType === 3) {
+                            // Unwrap if we created the span
+                            const text = document.createTextNode(el.nextSibling.textContent);
+                            el.parentNode.replaceChild(text, el.nextSibling);
+                        } else {
+                            el.nextSibling.style.textDecoration = 'none';
+                            el.nextSibling.style.color = '';
+                        }
+                    }
+                }
+            }
+
+            openReadingMode(id) {
+                const item = this.data.items.find(i => i.id == id);
+                if (!item) return;
+                this.readingItemId = id;
+
+                // Build badges HTML with type icon
+                const typeIcon = item.type === 'task'
+                    ? `<svg style="width:18px;height:18px;color:var(--text-secondary)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>`
+                    : `<svg style="width:18px;height:18px;color:var(--text-secondary)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`;
+
+                const cat = item.category.toLowerCase();
+                let tagClass = 'default';
+                if (cat.includes('work')) tagClass = 'work';
+                else if (cat.includes('learn')) tagClass = 'learning';
+                else if (cat.includes('personal')) tagClass = 'personal';
+
+                let badges = `${typeIcon}<div class="tag ${tagClass}">${item.category}</div>`;
+                if (item.type === 'task' && item.priority) {
+                    const pColors = { low: 'var(--emerald)', medium: 'var(--amber)', high: 'var(--rose)' };
+                    const pBg = { low: 'rgba(16,185,129,0.1)', medium: 'rgba(245,158,11,0.1)', high: 'rgba(244,63,94,0.1)' };
+                    badges += `<span class="tag" style="background:${pBg[item.priority]};color:${pColors[item.priority]};text-transform:capitalize">${item.priority}</span>`;
+                }
+                if (item.dueDate) {
+                    badges += `<div class="tag" style="background:var(--grey-100);color:var(--text-secondary)">${this.formatDateTime(item.dueDate)}</div>`;
+                }
+
+                document.getElementById('readingBadges').innerHTML = badges;
+
+                // Content & Checkbox
+                let contentHtml = item.content;
+
+                // Add "Mark as complete" checkbox for tasks
+                let footerHtml = '';
+                if (item.type === 'task') {
+                    const checked = item.completed ? 'checked' : '';
+                    const labelStyle = item.completed ? 'text-decoration:line-through;color:var(--text-secondary)' : '';
+                    footerHtml = `
+                        <div style="margin-top:2rem;padding-top:1rem;border-top:1px solid var(--border-color);display:flex;align-items:center;gap:0.5rem">
+                            <input type="checkbox" id="readModeCheck" ${checked} style="width:18px;height:18px;accent-color:var(--indigo);cursor:pointer" onclick="app.toggleComplete('${item.id}'); app.openReadingMode('${item.id}')">
+                            <label for="readModeCheck" style="cursor:pointer;${labelStyle}">Mark this task as complete</label>
+                        </div>`;
+                }
+
+                document.getElementById('readingContent').innerHTML = contentHtml + footerHtml;
+                document.getElementById('readingEditBtn').onclick = () => this.editItem(id);
+                document.getElementById('readingModal').classList.add('open');
+            }
+
+            closeReadingModal() {
+                document.getElementById('readingModal').classList.remove('open');
+                this.readingItemId = null;
+            }
+
+
+
             populateCategories() {
-                const select = document.getElementById('categorySelect');
-                if (select) select.innerHTML = this.data.categories.map(c => `<option>${c}</option>`).join('');
+                const container = document.getElementById('categoryPills');
+                if (!container) return;
+                const pills = this.data.categories.map(c =>
+                    `<button type="button" class="cat-pill${this.selectedCategory === c ? ' selected' : ''}" onclick="event.stopPropagation(); app.selectCategory('${c}')">${c}</button>`
+                ).join('');
+                container.innerHTML = pills + `<button type="button" class="cat-pill add-cat" onclick="event.stopPropagation(); app.addCategory()">+ New</button>`;
+            }
+
+            selectCategory(cat) {
+                this.selectedCategory = cat;
+                this.populateCategories();
             }
 
             addCategory() {
@@ -1926,21 +2420,100 @@
                 if (name && name.trim()) {
                     if (!this.data.categories.includes(name.trim())) {
                         this.data.categories.push(name.trim());
-                        this.saveData(); this.populateCategories();
-                        document.getElementById('categorySelect').value = name.trim();
+                        this.saveData();
                     }
+                    this.selectedCategory = name.trim();
+                    this.populateCategories();
+                    this.populateCategoryList();
                 }
             }
 
+            populateCategoryList() {
+                const container = document.getElementById('categoryList');
+                if (!container) return;
+
+                const editIcon = `<svg style="width:14px;height:14px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`;
+                const deleteIcon = `<svg style="width:14px;height:14px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>`;
+
+                container.innerHTML = this.data.categories.map(cat => `
+                    <div class="category-item">
+                        <span class="category-item-name">${cat}</span>
+                        <div class="category-item-actions">
+                            <button class="category-item-btn" onclick="app.renameCategory('${cat}')" title="Rename">${editIcon}</button>
+                            <button class="category-item-btn delete" onclick="app.deleteCategory('${cat}')" title="Delete">${deleteIcon}</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            renameCategory(oldName) {
+                const newName = prompt('Rename category:', oldName);
+                if (newName && newName.trim() && newName.trim() !== oldName) {
+                    const trimmed = newName.trim();
+                    if (this.data.categories.includes(trimmed)) {
+                        return this.showToast('Category already exists');
+                    }
+                    // Update category list
+                    const idx = this.data.categories.indexOf(oldName);
+                    if (idx !== -1) this.data.categories[idx] = trimmed;
+                    // Update all items with old category
+                    this.data.items.forEach(item => {
+                        if (item.category === oldName) item.category = trimmed;
+                    });
+                    this.saveData();
+                    this.populateCategoryList();
+                    this.populateCategories();
+                    this.render();
+                    this.showToast('Category renamed');
+                }
+            }
+
+            deleteCategory(name) {
+                if (this.data.categories.length <= 1) {
+                    return this.showToast('Cannot delete the only category');
+                }
+                const itemCount = this.data.items.filter(i => i.category === name).length;
+                const otherCategories = this.data.categories.filter(c => c !== name);
+
+                if (itemCount > 0) {
+                    // Build numbered list for selection
+                    const options = otherCategories.map((c, i) => `${i + 1}. ${c}`).join('\n');
+                    const choice = prompt(
+                        `Delete "${name}"?\n\n${itemCount} item(s) will be moved to another category.\n\nEnter number to choose:\n${options}`
+                    );
+                    if (!choice) return; // Cancelled
+
+                    const idx = parseInt(choice) - 1;
+                    if (isNaN(idx) || idx < 0 || idx >= otherCategories.length) {
+                        return this.showToast('Invalid selection');
+                    }
+
+                    const targetCategory = otherCategories[idx];
+                    this.data.items.forEach(item => {
+                        if (item.category === name) item.category = targetCategory;
+                    });
+                } else {
+                    if (!confirm(`Delete "${name}"?`)) return;
+                }
+
+                // Remove category
+                this.data.categories = this.data.categories.filter(c => c !== name);
+                this.saveData();
+                this.populateCategoryList();
+                this.populateCategories();
+                this.render();
+                this.showToast('Category deleted');
+            }
+
             saveItem() {
-                const content = document.getElementById('contentInput').value.trim();
-                if (!content) return this.showToast('Please enter content');
+                const content = document.getElementById('contentInput').innerHTML;
+                if (!content || content === '<br>') return this.showToast('Please enter content');
                 const id = document.getElementById('itemId').value;
                 const newItemId = crypto.randomUUID ? crypto.randomUUID() : Date.now();
                 const item = {
                     id: id ? (isNaN(id) ? id : parseInt(id)) : newItemId,
                     type: this.editType,
-                    category: document.getElementById('categorySelect').value,
+                    category: this.selectedCategory || this.data.categories[0],
                     content: content,
                     dueDate: document.getElementById('dueDateInput').value,
                     priority: this.editType === 'task' ? (this.editPriority || 'medium') : null,
@@ -1948,6 +2521,7 @@
                     reminder: this.editType === 'task' ? (document.getElementById('reminderInput').value || null) : null,
                     reminded: false,
                     completed: false,
+                    migratedToHtml: true,
                     updatedAt: Date.now()
                 };
                 if (id) {
@@ -1961,18 +2535,22 @@
                 const item = this.data.items.find(i => i.id == id);
                 if (!item) return;
                 document.getElementById('itemId').value = item.id;
-                document.getElementById('contentInput').value = item.content;
+                document.getElementById('contentInput').innerHTML = item.content; // Load HTML
                 document.getElementById('dueDateInput').value = item.dueDate || '';
-                document.getElementById('categorySelect').value = item.category;
+                this.selectedCategory = item.category;
                 document.getElementById('recurringInput').value = item.recurring || '';
                 document.getElementById('reminderInput').value = item.reminder || '';
                 this.setType(item.type);
                 if (item.type === 'task') this.setPriority(item.priority || 'medium');
-                // Hide type switch when editing, show Convert button for notes
-                document.getElementById('typeSwitch').classList.add('hide');
+
+                // Hide dropdown, show text title
+                document.getElementById('typeSelect').classList.add('hide');
+                document.getElementById('modalTitlePrefix').textContent = item.type === 'note' ? 'Edit Note' : 'Edit Task';
+
                 document.getElementById('convertToTaskBtn').className = item.type === 'note' ? 'btn btn-secondary' : 'btn btn-secondary hide';
-                document.getElementById('modalTitle').textContent = 'Edit Item';
                 document.getElementById('editModal').classList.add('open');
+                // Close reading modal if open
+                document.getElementById('readingModal').classList.remove('open');
             }
 
             convertToTask() {
@@ -2094,29 +2672,51 @@
                 document.getElementById('completedList').classList.toggle('hide');
             }
 
+            enterReadingMode(id) {
+                this.readingModeId = id;
+                document.body.classList.add('reading-mode');
+                document.querySelector('.fab').classList.add('hidden');
+                this.render();
+            }
+
+            exitReadingMode() {
+                this.readingModeId = null;
+                document.body.classList.remove('reading-mode');
+                document.querySelector('.fab').classList.remove('hidden');
+                this.render();
+            }
+
             toggleSettings() {
                 const modal = document.getElementById('settingsModal');
                 const isOpen = modal.classList.contains('open');
                 if (!isOpen) {
-                    document.getElementById('modeCompact').className = this.displayMode === 'compact' ? 'mode-btn active' : 'mode-btn';
-                    document.getElementById('modeExpanded').className = this.displayMode === 'expanded' ? 'mode-btn active' : 'mode-btn';
-                    document.getElementById('showStatsToggle').checked = this.showStats;
+                    const showStats = localStorage.getItem('es-notes-show-stats') === '1';
+                    document.getElementById('showStatsToggle').checked = showStats;
                     document.getElementById('sortByPriorityToggle').checked = this.sortByPriority;
+                    this.populateCategoryList();
                 }
                 modal.classList.toggle('open');
             }
 
-            setDisplayMode(mode) {
-                this.displayMode = mode; this.data.displayMode = mode; this.saveData();
-                document.getElementById('modeCompact').className = mode === 'compact' ? 'mode-btn active' : 'mode-btn';
-                document.getElementById('modeExpanded').className = mode === 'expanded' ? 'mode-btn active' : 'mode-btn';
+            toggleStats(show) {
+                const grid = document.getElementById('statsGrid');
+                const btn = document.getElementById('statsToggleBtn');
+                if (show) {
+                    grid.classList.add('show-stats');
+                    btn.classList.add('active');
+                } else {
+                    grid.classList.remove('show-stats');
+                    btn.classList.remove('active');
+                }
+                localStorage.setItem('es-notes-show-stats', show ? '1' : '0');
             }
 
-            toggleStats(show) {
-                this.showStats = show;
-                this.data.showStats = show;
-                document.getElementById('statsGrid').style.display = show ? 'grid' : 'none';
-                this.saveData();
+            toggleStatsFromHeader() {
+                const isVisible = localStorage.getItem('es-notes-show-stats') === '1';
+                this.toggleStats(!isVisible);
+                // Also sync settings checkbox if modal is open
+                const checkbox = document.getElementById('showStatsToggle');
+                if (checkbox) checkbox.checked = !isVisible;
             }
 
             togglePrioritySort(enabled) {
@@ -2184,6 +2784,8 @@
                     icon.innerHTML = '<path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z" />';
                 }
             }
+
+
 
             setPage(page) { this.currentPage = page; this.render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
@@ -2258,6 +2860,22 @@
                 const paginatedItems = active.slice((this.currentPage - 1) * this.itemsPerPage, this.currentPage * this.itemsPerPage);
 
                 const activeList = document.getElementById('activeList');
+
+                // Reading mode - show only the selected item
+                if (this.readingModeId) {
+                    const readingItem = this.data.items.find(i => i.id == this.readingModeId);
+                    if (readingItem) {
+                        activeList.innerHTML = this.renderCard(readingItem, true);
+                        document.getElementById('completedSection').style.display = 'none';
+                        document.querySelector('.pagination')?.remove();
+                        return;
+                    } else {
+                        this.exitReadingMode();
+                        return;
+                    }
+                }
+                document.getElementById('completedSection').style.display = '';
+
                 if (active.length === 0) {
                     activeList.innerHTML = `<div class="empty"><div style="margin-bottom:1rem;color:var(--text-secondary)"><svg class="icon" style="width:48px;height:48px" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg></div><div>No items found</div></div>`;
                 } else {
@@ -2290,7 +2908,7 @@
                 document.getElementById('completedList').innerHTML = completed.map(i => this.renderCard(i)).join('');
             }
 
-            renderCard(item) {
+            renderCard(item, isReading = false) {
                 const cat = item.category.toLowerCase();
                 let tagClass = 'default';
                 if (cat.includes('work')) tagClass = 'work';
@@ -2298,8 +2916,8 @@
                 else if (cat.includes('personal')) tagClass = 'personal';
 
                 let cardClass = `card ${item.type}`;
+                if (isReading) cardClass += ' reading';
                 let dateBadge = '';
-                let compactDate = '';
 
                 // Priority indicator
                 let priorityBadge = '';
@@ -2323,48 +2941,26 @@
                     if (days < 0) {
                         color = 'var(--rose)'; bg = 'rgba(244,63,94,0.1)'; cardClass += ' overdue';
                         dateBadge = `<div class="tag" style="background:${bg}; color:${color}">${dStr}${recurringIcon}${reminderIcon}</div>`;
-                        compactDate = `<span class="compact-date" style="color:${color}">${dStr}${recurringIcon}${reminderIcon}</span>`;
                     } else if (days <= 1) {
                         color = 'var(--amber)'; bg = 'rgba(245,158,11,0.1)';
                         const label = days === 0 ? 'Today' : dStr;
                         dateBadge = `<div class="tag" style="background:${bg}; color:${color}">${label}${recurringIcon}${reminderIcon}</div>`;
-                        compactDate = `<span class="compact-date" style="color:${color}">${label}${recurringIcon}${reminderIcon}</span>`;
                     } else {
                         dateBadge = `<div class="tag" style="background:var(--grey-100);color:var(--text-secondary)">${dStr}${recurringIcon}${reminderIcon}</div>`;
-                        compactDate = `<span class="compact-date">${dStr}${recurringIcon}${reminderIcon}</span>`;
                     }
                 }
 
                 if (item.completed) cardClass += ' completed';
-                if (this.displayMode === 'compact') cardClass += ' compact';
 
-                const isExpanded = this.expandedCards.has(String(item.id));
-                const textClass = isExpanded ? 'card-text expanded' : 'card-text';
-                const displayContent = isExpanded ? this.parseMarkdown(item.content) : item.content;
+                const textClass = 'card-text';
+                const displayContent = item.content;
+
 
                 const checkbox = item.type === 'task'
-                    ? `<div class="checkbox ${item.completed ? 'checked' : ''}" onclick="app.toggleComplete('${item.id}')">${item.completed ? '<svg style="width:14px;height:14px;stroke:white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>' : ''}</div>`
+                    ? `<div class="checkbox ${item.completed ? 'checked' : ''}" onclick="event.stopPropagation(); app.toggleComplete('${item.id}')">${item.completed ? '<svg style="width:14px;height:14px;stroke:white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>' : ''}</div>`
                     : `<div style="width:22px;height:22px;display:grid;place-items:center;color:var(--text-secondary)"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>`;
 
-                if (this.displayMode === 'compact') {
-                    return `
-                    <div class="${cardClass}">
-                        <div class="card-top" style="display:none"></div>
-                        <div class="card-body">
-                            ${checkbox}
-                            <div class="tag ${tagClass}">${item.category}</div>
-                            ${priorityBadge}
-                            <div class="card-content" style="display:flex;flex:1;align-items:center;gap:0.5rem;min-width:0">
-                                <div class="${textClass}" onclick="app.toggleExpanded('${item.id}')">${displayContent}</div>
-                                ${compactDate}
-                            </div>
-                            <div class="compact-actions" style="display:flex;gap:0.25rem;flex-shrink:0;margin-left:0.5rem">
-                                <button class="icon-btn" onclick="app.editItem('${item.id}')"><svg class="icon" style="width:16px;height:16px" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button>
-                                <button class="icon-btn" onclick="app.deleteItem('${item.id}')"><svg class="icon" style="width:16px;height:16px" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg></button>
-                            </div>
-                        </div>
-                    </div>`;
-                }
+                const cardClick = `onclick="app.openReadingMode('${item.id}')"`;
 
                 return `
                 <div class="${cardClass}">
@@ -2375,13 +2971,13 @@
                             ${dateBadge}
                         </div>
                         <div class="card-actions">
-                            <button class="icon-btn" onclick="app.editItem('${item.id}')"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-                            <button class="icon-btn" onclick="app.deleteItem('${item.id}')"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
+                            <button class="icon-btn" onclick="event.stopPropagation(); app.editItem('${item.id}')"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                            <button class="icon-btn" onclick="event.stopPropagation(); app.deleteItem('${item.id}')"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
                         </div>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body" ${cardClick}>
                         ${checkbox}
-                        <div class="${textClass}" onclick="app.toggleExpanded('${item.id}')">${displayContent}</div>
+                        <div class="${textClass}">${displayContent}</div>
                     </div>
                 </div>`;
             }
